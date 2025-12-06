@@ -264,24 +264,3 @@ def flatten_summary_for_print(summary: DatasetSummary) -> pd.DataFrame:
             }
         )
     return pd.DataFrame(rows)
-# 👇 ДОБАВЬТЕ ЭТОТ БЛОК В КОНЕЦ core.py — НЕ ТРОГАЯ СТАРЫЙ КОД
-def generate_report(df, summary, missing_df, flags, title="EDA Report", top_k=10, max_hist_cols=5, missing_thresh=0.5):
-    """
-    Минимальный генератор отчёта — только для тестов и CLI.
-    Возвращает строку с текстом отчёта.
-    """
-    report = f"# {title}\n\n"
-    report += "## Качество данных\n"
-    report += f"- Строк: {summary.n_rows}\n"
-    report += f"- Колонок: {summary.n_cols}\n"
-    report += f"- Макс. доля пропусков: {flags.get('max_missing_share', 0):.2f}\n"
-    report += f"- Константные колонки: {'Да' if flags.get('has_constant_columns', False) else 'Нет'}\n"
-    report += f"- Высокая кардинальность: {'Да' if flags.get('has_high_cardinality_categoricals', False) else 'Нет'}\n"
-    
-    # Пример использования параметров CLI
-    report += f"\n## Параметры отчёта\n"
-    report += f"- Top-K категорий: {top_k}\n"
-    report += f"- Max hist columns: {max_hist_cols}\n"
-    report += f"- Threshold missing: {missing_thresh}\n"
-
-    return report

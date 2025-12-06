@@ -16,7 +16,6 @@ from .core import (
     top_categories,
     build_summary,
     compute_quality_flags,
-    generate_report,
 )
 from .viz import (
     plot_correlation_heatmap,
@@ -26,22 +25,6 @@ from .viz import (
 )
 
 app = typer.Typer(help="Мини-CLI для EDA CSV-файлов")
-
-def report(csv_path, out_dir, max_hist_columns, top_k_categories, title, min_missing_share):
-    df = pd.read_csv(csv_path)
-    summary = build_summary(df)
-    missing_df = pd.DataFrame({"missing_share": df.isna().mean()})
-    
-    flags = compute_quality_flags(summary, missing_df)
-
-    # Передаём параметры в generate_report (core.py → text)
-    report_md = generate_report(
-        df, summary, missing_df, flags,
-        title=title,
-        top_k=top_k_categories,
-        max_hist_cols=max_hist_columns,
-        missing_thresh=min_missing_share,
-    )
 
 def _load_csv(
     path: Path,
@@ -76,8 +59,6 @@ def overview(
     typer.echo(f"Столбцов: {summary.n_cols}")
     typer.echo("\nКолонки:")
     typer.echo(summary_df.to_string(index=False))
-
-
 @app.command()
 def report(
     path: str = typer.Argument(..., help="Путь к CSV-файлу."),
@@ -85,6 +66,9 @@ def report(
     sep: str = typer.Option(",", help="Разделитель в CSV."),
     encoding: str = typer.Option("utf-8", help="Кодировка файла."),
     max_hist_columns: int = typer.Option(6, help="Максимум числовых колонок для гистограмм."),
+    top_k_categories: int = typer.Option(5, help="Сколько категорий отображать для категориальных столбцов."),
+    title: str = typer.Option("EDA-отчёт", help="Заголовок отчёта."),
+    min_missing_share: float = typer.Option(0.3, help="Порог доли пропусков для оценки качества."),
 ) -> None:
     """
     Сгенерировать полный EDA-отчёт:
@@ -104,7 +88,8 @@ def report(
     summary_df = flatten_summary_for_print(summary)
     missing_df = missing_table(df)
     corr_df = correlation_matrix(df)
-    top_cats = top_categories(df)
+    # ✅ ИСПОЛЬЗУЕМ top_k_categories
+    top_cats = top_categories(df, max_columns=10, top_k=top_k_categories)
 
     # 2. Качество в целом
     quality_flags = compute_quality_flags(summary, missing_df)
@@ -120,16 +105,34 @@ def report(
     # 4. Markdown-отчёт
     md_path = out_root / "report.md"
     with md_path.open("w", encoding="utf-8") as f:
-        f.write(f"# EDA-отчёт\n\n")
+        f.write(f"# {title}\n\n")  # ✅ ИСПОЛЬЗУЕМ title
         f.write(f"Исходный файл: `{Path(path).name}`\n\n")
         f.write(f"Строк: **{summary.n_rows}**, столбцов: **{summary.n_cols}**\n\n")
+
+        # ✅ ДОБАВЛЯЕМ РАЗДЕЛ С ПАРАМЕТРАМИ АНАЛИЗА
+        f.write("## Параметры анализа\n\n")
+        f.write(f"- Top-K категорий: **{top_k_categories}**\n")
+        f.write(f"- Максимум гистограмм: **{max_hist_columns}**\n")
+        f.write(f"- Порог пропусков: **{min_missing_share:.1%}**\n\n")
 
         f.write("## Качество данных (эвристики)\n\n")
         f.write(f"- Оценка качества: **{quality_flags['quality_score']:.2f}**\n")
         f.write(f"- Макс. доля пропусков по колонке: **{quality_flags['max_missing_share']:.2%}**\n")
         f.write(f"- Слишком мало строк: **{quality_flags['too_few_rows']}**\n")
         f.write(f"- Слишком много колонок: **{quality_flags['too_many_columns']}**\n")
-        f.write(f"- Слишком много пропусков: **{quality_flags['too_many_missing']}**\n\n")
+        f.write(f"- Слишком много пропусков: **{quality_flags['too_many_missing']}**\n")
+        f.write(f"- Есть константные колонки: **{quality_flags.get('has_constant_columns', False)}**\n")
+        f.write(f"- Есть высокая кардинальность: **{quality_flags.get('has_high_cardinality_categoricals', False)}**\n\n")
+
+        # ✅ ДОБАВЛЯЕМ ПРОБЛЕМНЫЕ КОЛОНКИ ПО ПОРОГУ min_missing_share
+        if not missing_df.empty:
+            high_missing_cols = missing_df[missing_df['missing_share'] > min_missing_share]
+            if not high_missing_cols.empty:
+                f.write("## Колонки с критическими пропусками\n\n")
+                f.write(f"Колонки с долей пропусков > {min_missing_share:.1%}:\n\n")
+                for idx, row in high_missing_cols.iterrows():
+                    f.write(f"- **{idx}**: {row['missing_share']:.1%} пропусков\n")
+                f.write("\n")
 
         f.write("## Колонки\n\n")
         f.write("См. файл `summary.csv`.\n\n")
@@ -150,12 +153,15 @@ def report(
         if not top_cats:
             f.write("Категориальные/строковые признаки не найдены.\n\n")
         else:
+            f.write(f"Топ-{top_k_categories} категорий для каждого признака (см. папку `top_categories/`):\n\n")
             f.write("См. файлы в папке `top_categories/`.\n\n")
 
         f.write("## Гистограммы числовых колонок\n\n")
+        f.write(f"Сгенерировано гистограмм: не более {max_hist_columns}\n")
         f.write("См. файлы `hist_*.png`.\n")
 
     # 5. Картинки
+    # ✅ ИСПОЛЬЗУЕМ max_hist_columns
     plot_histograms_per_column(df, out_root, max_columns=max_hist_columns)
     plot_missing_matrix(df, out_root / "missing_matrix.png")
     plot_correlation_heatmap(df, out_root / "correlation_heatmap.png")
@@ -164,7 +170,6 @@ def report(
     typer.echo(f"- Основной markdown: {md_path}")
     typer.echo("- Табличные файлы: summary.csv, missing.csv, correlation.csv, top_categories/*.csv")
     typer.echo("- Графики: hist_*.png, missing_matrix.png, correlation_heatmap.png")
-
 
 if __name__ == "__main__":
     app()
