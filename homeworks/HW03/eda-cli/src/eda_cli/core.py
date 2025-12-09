@@ -169,7 +169,7 @@ def top_categories(
     top_k: int = 5,
 ) -> Dict[str, pd.DataFrame]:
     """
-    Для категориальных/строковых колонок считает top-k значений.
+    Для категориальных/строковых колонок считает top-k значени.
     Возвращает словарь: колонка -> DataFrame со столбцами value/count/share.
     """
     result: Dict[str, pd.DataFrame] = {}
