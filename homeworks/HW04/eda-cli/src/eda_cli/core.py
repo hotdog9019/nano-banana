@@ -216,9 +216,6 @@ def compute_quality_flags(summary: DatasetSummary, missing_df: pd.DataFrame) -> 
     flags["has_constant_columns"] = getattr(summary, "n_constant_columns", 0) > 0
     flags["has_high_cardinality_categoricals"] = getattr(summary, "max_cat_card", 0) > 50
 
-
-
-
     # Простейший «скор» качества
     score = 1.0
     score -= max_missing_share  # чем больше пропусков, тем хуже
@@ -230,6 +227,7 @@ def compute_quality_flags(summary: DatasetSummary, missing_df: pd.DataFrame) -> 
         score -= 0.1
     if flags["has_constant_columns"]: 
         score -= 0.1
+
 
     score = max(0.0, min(1.0, score))
     flags["quality_score"] = score

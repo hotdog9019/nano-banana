@@ -1,0 +1,16 @@
+[project]
+name = "nano-banana"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.124.0",
+    "python-multipart>=0.0.20",
+    "unicorn[standart]>=2.1.4",
+]
+
+[tool.uv.workspace]
+members = [
+    "homeworks/HW04",
+]
