@@ -289,34 +289,22 @@ async def quality_flags_from_csv(file: UploadFile = File(...)) -> dict:
         df = pd.read_csv(file.file)
     except Exception as exc:
         raise HTTPException(status_code=400, detail=f"Не удалось прочитать CSV: {exc}")
-
     if df.empty:
         raise HTTPException(status_code=400, detail="CSV-файл пуст")
-
-    # Используем EDA-ядро
-    summary = _prepare_summary_for_flags(df)
+    summary = summarize_dataset(df)        
     missing_df = missing_table(df)
-    flags_all = compute_quality_flags(summary, missing_df)
-
-    # Отфильтровываем только булевы флаги (по заданию HW04)
+    flags_all = compute_quality_flags(summary, missing_df)  
     flags_bool = {}
     for key, value in flags_all.items():
-        # Проверяем, является ли значение булевым
         if isinstance(value, bool):
             flags_bool[key] = value
-        # Если это max_missing_share, пропускаем (это float)
         elif key == "max_missing_share":
             continue
-        # Если это quality_score, тоже пропускаем
         elif key == "quality_score":
             continue
-    
-    # Добавляем специально твои флаги из HW03, даже если они не bool
-    hw03_flags = ["has_constant_columns", "has_high_cardinality_categoricals"]
+    hw03_flags = ["has_constant_columns", "has_high_cardinality_categoricals", "quality_score"]
     for flag in hw03_flags:
         if flag in flags_all:
             flags_bool[flag] = bool(flags_all[flag])
-
     print(f"[quality-flags-from-csv] filename={file.filename!r} flags={len(flags_bool)}")
-
-    return {"flags": flags_bool}
+    return {"flags": flags_all}
