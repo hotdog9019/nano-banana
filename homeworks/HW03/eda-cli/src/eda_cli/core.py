@@ -197,44 +197,32 @@ def top_categories(
 
     return result
 
-
-def compute_quality_flags(summary: DatasetSummary, missing_df: pd.DataFrame) -> Dict[str, Any]:
-    """
-    Простейшие эвристики «качества» данных:
-    - слишком много пропусков;
-    - подозрительно мало строк;
-    и т.п.
-    """
-    flags: Dict[str, Any] = {}
-    flags["too_few_rows"] = summary.n_rows < 100
-    flags["too_many_columns"] = summary.n_cols > 100
-
-    max_missing_share = float(missing_df["missing_share"].max()) if not missing_df.empty else 0.0
-    flags["max_missing_share"] = max_missing_share
-    flags["too_many_missing"] = max_missing_share > 0.5
-
-    flags["has_constant_columns"] = getattr(summary, "n_constant_columns", 0) > 0
-    flags["has_high_cardinality_categoricals"] = getattr(summary, "max_cat_card", 0) > 50
-
-
-
-
-    # Простейший «скор» качества
-    score = 1.0
-    score -= max_missing_share  # чем больше пропусков, тем хуже
-    if summary.n_rows < 100:
-        score -= 0.2
-    if summary.n_cols > 100:
+def compute_quality_flags(summary, missing_df):
+    has_constant_columns = False
+    has_high_cardinality = False
+    for col in summary.columns:
+        non_missing = col.non_null 
+        if non_missing > 0 and col.unique == 1:
+            has_constant_columns = True
+        dtype_clean = col.dtype.split("[")[0].lower()
+        if dtype_clean in ("object", "string", "category"):
+            if non_missing > 0 and col.unique > 0.5 * non_missing:
+                has_high_cardinality = True
+        elif dtype_clean in ("int64", "int32", "int"):
+            if non_missing > 10 and col.unique == non_missing:
+                has_high_cardinality = True
+    avg_missing = missing_df["missing_share"].mean()
+    score = 1.0 - avg_missing
+    if has_constant_columns:
         score -= 0.1
-    if flags["has_high_cardinality_categoricals"]:
+    if has_high_cardinality:
         score -= 0.1
-    if flags["has_constant_columns"]: 
-        score -= 0.1
-
     score = max(0.0, min(1.0, score))
-    flags["quality_score"] = score
-
-    return flags
+    return {
+        "has_constant_columns": has_constant_columns,
+        "has_high_cardinality": has_high_cardinality,
+        "quality_score": score,
+    }
 
 
 def flatten_summary_for_print(summary: DatasetSummary) -> pd.DataFrame:
