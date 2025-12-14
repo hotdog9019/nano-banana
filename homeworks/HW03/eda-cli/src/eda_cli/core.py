@@ -25,7 +25,6 @@ class ColumnSummary:
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
 
-
 @dataclass
 class DatasetSummary:
     n_rows: int
@@ -38,35 +37,6 @@ class DatasetSummary:
             "n_cols": self.n_cols,
             "columns": [c.to_dict() for c in self.columns],
         }
-
-def build_summary(df: pd.DataFrame):
-    n_rows = len(df)
-    n_cols = len(df.columns)
-
-    # Число константных колонок
-    n_const_cols = 0
-    for col in df.columns:
-        non_null = df[col].dropna()
-        if len(non_null) > 0 and non_null.nunique() == 1:
-            n_const_cols += 1
-
-    # Категориальные колонки
-    cat_cols = df.select_dtypes(include=['object', 'category']).columns
-
-    if len(cat_cols) > 0:
-        max_cat_card = int(df[cat_cols].nunique(dropna=True).max())
-    else:
-        max_cat_card = 0
-
-    from types import SimpleNamespace
-    return SimpleNamespace(
-        n_rows=n_rows,
-        n_cols=n_cols,
-        n_const_cols=n_const_cols,
-        max_cat_card=max_cat_card,
-    )
-
-
 
 def summarize_dataset(
     df: pd.DataFrame,

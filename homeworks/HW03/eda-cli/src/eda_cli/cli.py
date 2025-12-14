@@ -8,13 +8,11 @@ import typer
 
 from .core import (
     DatasetSummary,
-    compute_quality_flags,
     correlation_matrix,
     flatten_summary_for_print,
     missing_table,
     summarize_dataset,
     top_categories,
-    build_summary,
     compute_quality_flags,
 )
 from .viz import (
@@ -109,7 +107,7 @@ def report(
         f.write(f"- Слишком много колонок: **{quality_flags['too_many_columns']}**\n")
         f.write(f"- Слишком много пропусков: **{quality_flags['too_many_missing']}**\n")
         f.write(f"- Есть константные колонки: **{quality_flags.get('has_constant_columns', False)}**\n")
-        f.write(f"- Есть высокая кардинальность: **{quality_flags.get('has_high_cardinality_categoricals', False)}**\n\n")
+        f.write(f"- Есть высокая кардинальность: **{quality_flags.get('has_high_cardinality', False)}**\n\n")
         if not missing_df.empty:
             high_missing_cols = missing_df[missing_df['missing_share'] > min_missing_share]
             if not high_missing_cols.empty:
