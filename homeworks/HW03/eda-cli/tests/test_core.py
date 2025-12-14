@@ -71,3 +71,21 @@ def test_new_heuristics():
     flags = compute_quality_flags(summary, missing_df)
     assert flags["has_constant_columns"] is True
     assert flags["has_high_cardinality"] is True
+def test_constant_columns():
+    df = pd.DataFrame({
+        "const": ["A"] * 100,
+        "normal": range(100)
+    })
+    summary = summarize_dataset(df)
+    missing_df = missing_table(df)
+    flags = compute_quality_flags(summary, missing_df)
+    assert flags["has_constant_columns"] is True
+
+def test_high_cardinality():
+    df = pd.DataFrame({
+        "high_card": [f"val_{i}" for i in range(100)] 
+    })
+    summary = summarize_dataset(df)
+    missing_df = missing_table(df)
+    flags = compute_quality_flags(summary, missing_df)
+    assert flags["has_high_cardinality"] is True
