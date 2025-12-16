@@ -203,29 +203,30 @@ curl -X POST "http://127.0.0.1:8000/quality" \
 
 ---
 
-### 4. `POST /quality-from-csv` – оценка качества по CSV-файлу
+### 5. `POST /quality-flags-from-csv` – оценка качества по CSV-файлу
 
 Эндпоинт принимает CSV-файл, внутри:
 
 - читает его в `pandas.DataFrame`;
-- вызывает функции из `eda_cli.core`:
+- вызывает новые функции из `eda_cli.core`:
 
-  - `summarize_dataset`,
-  - `missing_table`,
-  - `compute_quality_flags`;
+  -  `has_high_cardinality_categoricals`,
+  -  `quality_score`,
+  -  `avg_missing_share"]`
+
 - возвращает оценку качества датасета в том же формате, что `/quality`.
 
 **Запрос:**
 
 ```http
-POST /quality-from-csv
+POST /quality-flags-from-csv
 Content-Type: multipart/form-data
 file: <CSV-файл>
 ```
 
 Через Swagger:
 
-- в `/docs` открыть `POST /quality-from-csv`,
+- в `/docs` открыть `POST /quality-flags-from-csv`,
 - нажать `Try it out`,
 - выбрать файл (например, `data/example.csv`),
 - нажать `Execute`.
@@ -233,7 +234,7 @@ file: <CSV-файл>
 **Пример вызова через `curl` (Linux/macOS/WSL):**
 
 ```bash
-curl -X POST "http://127.0.0.1:8000/quality-from-csv" \
+curl -X POST "http://127.0.0.1:8000/quality-flags-from-csv" \
   -F "file=@data/example.csv"
 ```
 
@@ -269,7 +270,6 @@ S04/
 
 ---
 
-<<<<<<< HEAD
 ## Тесты
 
 Запуск тестов (как и в S03):
@@ -279,15 +279,14 @@ uv run pytest -q
 ```
 =======
 ##Новые возможности
->>>>>>> ea91842c44eed53bbe2777948b0f38bddbf3fe49
+
 
 Рекомендуется перед любыми изменениями в логике качества данных и API:
-
-<<<<<<< HEAD
 1. Запустить тесты `pytest`;
 2. Проверить работу CLI (`uv run eda-cli ...`);
 3. Проверить работу HTTP-сервиса (`uv run uvicorn ...`, затем `/health` и `/quality`/`/quality-from-csv` через `/docs` или HTTP-клиент).
 =======
+
 Команда поддерживает дополнительные параметры, которые расширяют функциональность отчёта:
 ```bash
 --max-hist-columns <int>
@@ -324,4 +323,4 @@ uv run eda-cli report data/example.csv \
 ```bash
 uv run pytest -q
 ```
->>>>>>> ea91842c44eed53bbe2777948b0f38bddbf3fe49
+
