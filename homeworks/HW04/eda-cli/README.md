@@ -203,29 +203,30 @@ curl -X POST "http://127.0.0.1:8000/quality" \
 
 ---
 
-### 4. `POST /quality-from-csv` – оценка качества по CSV-файлу
+### 5. `POST /quality-flags-from-csv` – оценка качества по CSV-файлу
 
 Эндпоинт принимает CSV-файл, внутри:
 
 - читает его в `pandas.DataFrame`;
-- вызывает функции из `eda_cli.core`:
+- вызывает новые функции из `eda_cli.core`:
 
-  - `summarize_dataset`,
-  - `missing_table`,
-  - `compute_quality_flags`;
+  -  `has_high_cardinality_categoricals`,
+  -  `quality_score`,
+  -  `avg_missing_share"]`
+
 - возвращает оценку качества датасета в том же формате, что `/quality`.
 
 **Запрос:**
 
 ```http
-POST /quality-from-csv
+POST /quality-flags-from-csv
 Content-Type: multipart/form-data
 file: <CSV-файл>
 ```
 
 Через Swagger:
 
-- в `/docs` открыть `POST /quality-from-csv`,
+- в `/docs` открыть `POST /quality-flags-from-csv`,
 - нажать `Try it out`,
 - выбрать файл (например, `data/example.csv`),
 - нажать `Execute`.
@@ -233,7 +234,7 @@ file: <CSV-файл>
 **Пример вызова через `curl` (Linux/macOS/WSL):**
 
 ```bash
-curl -X POST "http://127.0.0.1:8000/quality-from-csv" \
+curl -X POST "http://127.0.0.1:8000/quality-flags-from-csv" \
   -F "file=@data/example.csv"
 ```
 
