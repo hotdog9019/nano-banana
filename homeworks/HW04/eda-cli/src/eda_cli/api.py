@@ -275,13 +275,9 @@ async def quality_from_csv(file: UploadFile = File(...)) -> QualityResponse:
 @app.post(
     "/quality-flags-from-csv",
     tags=["quality"],
-    summary="Полный набор флагов качества из CSV-файла",
+    summary="Полный набор новых флагов качества из CSV-файла",
 )
-async def quality_flags_from_csv(file: UploadFile = File(...)) -> dict:
-    """
-    Принимает CSV-файл, запускает EDA-ядро и возвращает ВСЕ флаги качества,
-    включая добавленные в HW03 (has_constant_columns, has_high_cardinality_categoricals).
-    """
+async def quality_new_flags(file: UploadFile = File(...)) -> dict:
     if file.content_type not in ("text/csv", "application/vnd.ms-excel", "application/octet-stream"):
         raise HTTPException(status_code=400, detail="Ожидается CSV-файл")
 
@@ -302,7 +298,7 @@ async def quality_flags_from_csv(file: UploadFile = File(...)) -> dict:
             continue
         elif key == "quality_score":
             continue
-    hw03_flags = ["has_constant_columns", "has_high_cardinality_categoricals", "quality_score"]
+    hw03_flags = ["has_constant_columns", "has_high_cardinality_categoricals", "quality_score","avg_missing_share"]
     for flag in hw03_flags:
         if flag in flags_all:
             flags_bool[flag] = bool(flags_all[flag])
