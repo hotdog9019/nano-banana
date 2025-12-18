@@ -1,0 +1,40 @@
+{
+  "models": [
+    {
+      "model": "DummyClassifier (most_frequent)",
+      "accuracy": 0.95088,
+      "f1": 0.0,
+      "roc_auc": 0.5
+    },
+    {
+      "model": "LogisticRegression + StandardScaler",
+      "accuracy": 0.96272,
+      "f1": 0.41309823677581864,
+      "roc_auc": 0.8397074049287998
+    },
+    {
+      "model": "DecisionTree (tuned)",
+      "accuracy": 0.9648,
+      "f1": 0.5132743362831859,
+      "roc_auc": 0.7948137600363057
+    },
+    {
+      "model": "RandomForest (tuned)",
+      "accuracy": 0.97024,
+      "f1": 0.5674418604651162,
+      "roc_auc": 0.9016437919189958
+    },
+    {
+      "model": "GradientBoosting (tuned)",
+      "accuracy": 0.97264,
+      "f1": 0.6827458256029685,
+      "roc_auc": 0.8991357088869779
+    },
+    {
+      "model": "StackingClassifier",
+      "accuracy": 0.97856,
+      "f1": 0.7362204724409449,
+      "roc_auc": 0.8959501803506823
+    }
+  ]
+}

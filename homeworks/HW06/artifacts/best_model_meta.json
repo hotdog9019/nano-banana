@@ -1,0 +1,13 @@
+{
+  "model_name": "RandomForest (tuned)",
+  "model_type": "RandomForestClassifier",
+  "test_metrics": {
+    "accuracy": 0.97024,
+    "f1_score": 0.5674418604651162,
+    "roc_auc": 0.9016437919189958
+  },
+  "random_state": 42,
+  "dataset": "S06-hw-dataset-04.csv",
+  "train_size": 18750,
+  "test_size": 6250
+}
