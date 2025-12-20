@@ -1,0 +1,65 @@
+{
+  "dataset_1": {
+    "kmeans": {
+      "silhouette": 0.5216395622404242,
+      "davies_bouldin": 0.6853295219054459,
+      "calinski_harabasz": 11786.95462267153,
+      "best_k": 2
+    },
+    "dbscan": {
+      "n_noise": 0,
+      "noise_ratio": 0.0,
+      "best_eps": 1.5,
+      "silhouette": 0.3967888223601393,
+      "davies_bouldin": 0.9644102343879997,
+      "calinski_harabasz": 10446.597694416176
+    },
+    "agglomerative": {
+      "silhouette": 0.5216395622404242,
+      "davies_bouldin": 0.6853295219054459,
+      "calinski_harabasz": 11786.95462267153
+    }
+  },
+  "dataset_2": {
+    "kmeans": {
+      "silhouette": 0.3068610017701601,
+      "davies_bouldin": 1.3234721699867644,
+      "calinski_harabasz": 3573.3933329348392,
+      "best_k": 2
+    },
+    "dbscan": {
+      "n_noise": 579,
+      "noise_ratio": 0.072375,
+      "best_eps": 0.3,
+      "silhouette": 0.08522505460147263,
+      "davies_bouldin": 0.5896990784253007,
+      "calinski_harabasz": 21.95165666653018
+    },
+    "agglomerative": {
+      "silhouette": 0.2658744116185544,
+      "davies_bouldin": 1.4673684423118982,
+      "calinski_harabasz": 2929.722347992005
+    }
+  },
+  "dataset_3": {
+    "kmeans": {
+      "silhouette": 0.31554470037825183,
+      "davies_bouldin": 1.1577256320598661,
+      "calinski_harabasz": 6957.162639510166,
+      "best_k": 3
+    },
+    "dbscan": {
+      "n_noise": 333,
+      "noise_ratio": 0.0222,
+      "best_eps": 0.5,
+      "silhouette": -0.10435334322693379,
+      "davies_bouldin": 0.8424164793866374,
+      "calinski_harabasz": 12.755893055371436
+    },
+    "agglomerative": {
+      "silhouette": 0.30940029307932226,
+      "davies_bouldin": 1.1775936042245867,
+      "calinski_harabasz": 6705.577295073578
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "dataset_1": {
+    "method": "kmeans",
+    "silhouette": 0.5216395622404242
+  },
+  "dataset_2": {
+    "method": "kmeans",
+    "silhouette": 0.3068610017701601
+  },
+  "dataset_3": {
+    "method": "kmeans",
+    "silhouette": 0.31554470037825183
+  }
+}
