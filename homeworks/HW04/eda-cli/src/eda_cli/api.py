@@ -51,6 +51,27 @@ def _prepare_summary_for_flags(df: pd.DataFrame):
     
     return result
 
+class QualityFlagsResponse(BaseModel):
+    """Ответ с полным набором флагов качества датасета."""
+    
+    flags: dict[str, bool] = Field(
+        ...,
+        description="Булевы флаги качества (has_constant_columns, has_high_cardinality_categoricals и т.п.)"
+    )
+    metrics: dict[str, float] | None = Field(
+        default=None,
+        description="Числовые метрики качества (quality_score, max_missing_share и т.п.)"
+    )
+    dataset_shape: dict[str, int] | None = Field(
+        default=None,
+        description="Размеры датасета"
+    )
+    latency_ms: float = Field(
+        ...,
+        ge=0.0,
+        description="Время обработки запроса"
+    )
+
 class QualityRequest(BaseModel):
     """Агрегированные признаки датасета – 'фичи' для заглушки модели."""
 
@@ -270,14 +291,20 @@ async def quality_from_csv(file: UploadFile = File(...)) -> QualityResponse:
         flags=flags_bool,
         dataset_shape={"n_rows": n_rows, "n_cols": n_cols},
     )
-# ---------- /quality-flags-from-csv: все флаги качества ----------
-
 @app.post(
     "/quality-flags-from-csv",
+    response_model=QualityFlagsResponse,
     tags=["quality"],
-    summary="Полный набор новых флагов качества из CSV-файла",
+    summary="Полный набор флагов качества из CSV-файла",
 )
-async def quality_new_flags(file: UploadFile = File(...)) -> dict:
+async def quality_flags_from_csv(file: UploadFile = File(...)) -> QualityFlagsResponse:
+    """
+    Эндпоинт возвращает полный набор флагов качества датасета,
+    включая флаги из HW03 (has_constant_columns, has_high_cardinality_categoricals и т.п.),
+    а также числовые метрики (quality_score, max_missing_share и др.).
+    """
+    start = perf_counter()
+    
     if file.content_type not in ("text/csv", "application/vnd.ms-excel", "application/octet-stream"):
         raise HTTPException(status_code=400, detail="Ожидается CSV-файл")
 
@@ -285,22 +312,29 @@ async def quality_new_flags(file: UploadFile = File(...)) -> dict:
         df = pd.read_csv(file.file)
     except Exception as exc:
         raise HTTPException(status_code=400, detail=f"Не удалось прочитать CSV: {exc}")
+    
     if df.empty:
         raise HTTPException(status_code=400, detail="CSV-файл пуст")
     summary = summarize_dataset(df)        
     missing_df = missing_table(df)
     flags_all = compute_quality_flags(summary, missing_df)  
-    flags_bool = {}
+    flags_bool: dict[str, bool] = {}
+    metrics: dict[str, float] = {}
     for key, value in flags_all.items():
         if isinstance(value, bool):
             flags_bool[key] = value
-        elif key == "max_missing_share":
-            continue
-        elif key == "quality_score":
-            continue
-    hw03_flags = ["has_constant_columns", "has_high_cardinality_categoricals", "quality_score","avg_missing_share"]
-    for flag in hw03_flags:
-        if flag in flags_all:
-            flags_bool[flag] = bool(flags_all[flag])
-    print(f"[quality-flags-from-csv] filename={file.filename!r} flags={len(flags_bool)}")
-    return {"flags": flags_all}
+        elif isinstance(value, (int, float)):
+            metrics[key] = float(value)
+    latency_ms = (perf_counter() - start) * 1000.0
+    print(
+        f"[quality-flags-from-csv] filename={file.filename!r} "
+        f"n_rows={df.shape[0]} n_cols={df.shape[1]} "
+        f"flags_count={len(flags_bool)} metrics_count={len(metrics)} "
+        f"latency_ms={latency_ms:.1f} ms"
+    )
+    return QualityFlagsResponse(
+        flags=flags_bool,
+        metrics=metrics if metrics else None,
+        dataset_shape={"n_rows": df.shape[0], "n_cols": df.shape[1]},
+        latency_ms=latency_ms,
+    )
