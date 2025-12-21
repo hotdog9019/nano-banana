@@ -288,15 +288,22 @@ curl -X POST "http://127.0.0.1:8000/quality-flags-from-csv" \
 ```text
 {
   "flags": {
-    "avg_missing_share": 0.007936507936507936,
-    "max_missing_share": 0.05555555555555555,
     "too_many_missing": false,
     "too_few_rows": true,
     "too_many_columns": false,
     "has_constant_columns": false,
-    "has_high_cardinality": false,
+    "has_high_cardinality": false
+  },
+  "metrics": {
+    "avg_missing_share": 0.007936507936507936,
+    "max_missing_share": 0.05555555555555555,
     "quality_score": 0.7920634920634921
-  }
+  },
+  "dataset_shape": {
+    "n_rows": 36,
+    "n_cols": 14
+  },
+  "latency_ms": 7.020799999963856
 }
 ```
 ---
