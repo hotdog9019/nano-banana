@@ -56,14 +56,10 @@ logs/
 *.bak
 *.old
 
-# artifacts (generated outputs)
-artifacts/
+
 
 # pip/temp caches (local)
 .pip-cache/
 .tmp/
 .tmp-pip/
 
-# datasets (downloaded/generated locally)
-homeworks/datasets/cifar-10-batches-py/
-homeworks/datasets/cifar-10-python.tar.gz
