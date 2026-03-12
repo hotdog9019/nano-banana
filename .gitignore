@@ -55,3 +55,11 @@ logs/
 *.tmp
 *.bak
 *.old
+
+# artifacts (generated outputs)
+artifacts/
+
+# pip/temp caches (local)
+.pip-cache/
+.tmp/
+.tmp-pip/
