@@ -2,7 +2,7 @@
 
 Требования: `TS/S08-homework.md`.
 
-См. `HW08-09.ipynb` (Restart Kernel → Run All). Весь код находится внутри ноутбука. Он:
+См. `HW08-09.ipynb`:
 
 - загружает датасет через `torchvision` в `../datasets/`;
 - по умолчанию использует `CIFAR10` (переменная `DATASET` в ноутбуке);
