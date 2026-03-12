@@ -1,0 +1,32 @@
+{
+  "dataset": "CIFAR10",
+  "seed": 42,
+  "model": {
+    "input_dim": 3072,
+    "num_classes": 10,
+    "hidden_sizes": [
+      512,
+      256,
+      128
+    ],
+    "activation": "ReLU",
+    "dropout_p": 0.0,
+    "use_batchnorm": true
+  },
+  "training": {
+    "optimizer": "Adam",
+    "lr": 0.001,
+    "weight_decay": 0.0,
+    "batch_size": 256,
+    "val_fraction": 0.2,
+    "epochs_max": 15,
+    "early_stopping": {
+      "patience": 4,
+      "monitor": "val_accuracy",
+      "mode": "max"
+    }
+  },
+  "picked_from": "E3",
+  "device": "cpu",
+  "data_root": "..\\datasets"
+}

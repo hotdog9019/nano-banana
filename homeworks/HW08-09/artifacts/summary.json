@@ -1,0 +1,15 @@
+{
+  "device": "cpu",
+  "input_dim": 3072,
+  "num_classes": 10,
+  "picked_from": "E3",
+  "best_val_accuracy": 0.5491,
+  "best_val_loss": 1.317373631286621,
+  "test_accuracy": 0.5436,
+  "test_loss": 1.3569832914352418,
+  "runs_csv": "artifacts\\runs.csv",
+  "best_model_path": "artifacts\\best_model.pt",
+  "best_config_path": "artifacts\\best_config.json",
+  "fig_best": "artifacts\\figures\\curves_best.png",
+  "fig_lr": "artifacts\\figures\\curves_lr_extremes.png"
+}
