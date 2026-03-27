@@ -1,0 +1,14 @@
+{
+  "experiment_id": "C4",
+  "model_summary": "ResNet18-finetune",
+  "dataset": "STL10",
+  "img_size": 64,
+  "num_classes": 10,
+  "batch_size": 64,
+  "epochs_trained": 8,
+  "seed": 42,
+  "optimizer": "Adam",
+  "lr": 0.0005,
+  "best_val_accuracy": 0.956,
+  "test_accuracy": 0.9459
+}

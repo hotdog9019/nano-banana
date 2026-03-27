@@ -66,3 +66,7 @@ logs/
 # Datasets downloaded by notebooks
 homeworks/datasets/
 
+.gitignore_global
+homeworks/.claude/
+# HW10-11 datasets (keep out of git)
+homeworks/HW10-11/data/

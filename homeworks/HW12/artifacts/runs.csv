@@ -1,0 +1,5 @@
+experiment_id,task,dataset,seed,split_summary,window_size,horizon,model_summary,features_summary,scaler,optimizer,lr,epochs_trained,best_val_mae,best_val_rmse,best_val_mape,test_mae,test_rmse,test_mape,notes
+B1,forecasting,S12-hw-dataset.csv,42,train:3024 val:648 test:648,,1,naive-last,lag_1,,,,,6.4448,8.201,4.4,6.3424,8.0591,4.15,predict t with t-1
+B2,forecasting,S12-hw-dataset.csv,42,train:3024 val:648 test:648,7h,1,moving-average-7,rolling_mean_7,,,,,12.702,15.2176,8.82,12.7403,15.2387,8.55,rolling mean window=7
+B3,forecasting,S12-hw-dataset.csv,42,train:3024 val:648 test:648,,1,Ridge(alpha=1.0),"lag_1,lag_7,lag_14,rolling_mean_7,rolling_std_7,dow,hour",StandardScaler,,,,6.3602,7.8869,4.28,6.2744,7.9844,4.04,ridge on lag/rolling/calendar features
+R1,forecasting,S12-hw-dataset.csv,42,train:3024 val:648 test:648,24,1,"GRU(hidden=64,layers=2,dropout=0.2)",windowed target sequence,StandardScaler,Adam,0.001,20,5.5328,7.1163,3.73,6.8562,8.5314,4.41,GRU on window=24h
