@@ -19,28 +19,44 @@
 - Сегментация: `OxfordIIITPet` (из torchvision)
 - Папка для данных: `./data/` (скачивание автоматически при первом запуске)
 
-## 4. Эксперименты
+## 4. Часть A: модели и обучение (C1-C4)
 
-### 4.1. Классификация (STL10)
+Задача: классификация STL10. Для выбора лучшего подхода используется train/val split 80/20, **test** применяется только один раз — для финальной оценки лучшей модели по `val_accuracy`.
 
 - C1: простой CNN без аугментаций
 - C2: простой CNN + аугментации
 - C3: `ResNet18` (замороженный backbone, обучается только голова)
 - C4: `ResNet18` (частичный fine-tune верхних слоёв)
 
-### 4.2. Сегментация (OxfordIIITPet)
+Превью аугментаций (C2): `artifacts/figures/augmentations_preview.png`
 
-- Используется предобученный сегментатор; строятся примеры предсказаний и графики метрик.
+## 5. Часть B: постановка задачи и режимы оценки (V1-V2)
 
-## 5. Результаты и артефакты
+Задача: сегментация OxfordIIITPet предобученной моделью DeepLabV3.
 
-После запуска ноутбука/скрипта:
+- V1: threshold=0.5
+- V2: threshold=0.7 + min-area filtering
 
-- Таблица прогонов: `./artifacts/runs.csv`
-- Лучшая модель классификатора: `./artifacts/best_classifier.pt`
-- Конфиг лучшего прогона: `./artifacts/best_classifier_config.json`
-- Графики: `./artifacts/figures/*.png`
+Визуализация примеров: `artifacts/figures/segmentation_examples.png`  
+Метрики: `artifacts/figures/segmentation_metrics.png`
 
-## 6. Итоговый вывод
+## 6. Результаты
+
+- Таблица прогонов: `artifacts/runs.csv`
+- Лучшая модель классификатора: `artifacts/best_classifier.pt`
+- Конфиг лучшего прогона: `artifacts/best_classifier_config.json`
+
+Графики/артефакты:
+- `artifacts/figures/classification_curves_best.png`
+- `artifacts/figures/classification_compare.png`
+- `artifacts/figures/augmentations_preview.png`
+- `artifacts/figures/segmentation_examples.png`
+- `artifacts/figures/segmentation_metrics.png`
+
+## 7. Анализ
+
+Transfer learning (ResNet18) даёт заметный прирост качества на STL10 по сравнению с SimpleCNN, а аугментации помогают улучшить обобщающую способность. В сегментации качество чувствительно к порогу и пост-обработке.
+
+## 8. Итоговый вывод
 
 Transfer learning на `ResNet18` обычно даёт более высокое качество на `STL10`, чем обучение простого CNN “с нуля”, особенно при аккуратном fine-tune. Для сегментации предобученные модели дают разумный baseline без сложной настройки.
