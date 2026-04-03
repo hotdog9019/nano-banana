@@ -1,62 +1,100 @@
-# HW10-11 — компьютерное зрение: CNN, transfer learning и сегментация
+# HW10-11 – компьютерное зрение в PyTorch: CNN, transfer learning, segmentation
 
 ## 1. Кратко: что сделано
 
-- Построены пайплайны для задачи классификации на `STL10` и для сегментации на `OxfordIIITPet`.
-- Для классификации сравнивались варианты обучения: простой CNN без аугментаций/с аугментациями и transfer learning на `ResNet18` (head-only и частичный fine-tune).
-- Для сегментации использовалась предобученная модель (семейство DeepLab), показана визуализация предсказаний и базовые метрики.
-- Все ключевые артефакты (графики, лучшая модель, конфиг, таблица прогонов) сохраняются в `./artifacts/`.
+- Часть A (классификация): выбран датасет `STL10`, реализованы пайплайны `Dataset/DataLoader`, `transforms`, обучение и валидация.
+- Сравнены 4 эксперимента C1–C4: простой CNN без аугментаций, простой CNN с аугментациями, transfer learning на `ResNet18` (head-only), частичный fine-tune `ResNet18` (layer4 + fc).
+- Часть B (segmentation): выбран датасет `OxfordIIITPet`, выполнен инференс предобученной моделью `DeepLabV3_ResNet50` и сравнение двух режимов постобработки V1/V2.
+- Все артефакты экспериментов сохранены в `./artifacts/` (таблица прогонов, конфиг, лучшая модель, графики и визуализации).
 
 ## 2. Среда и воспроизводимость
 
-- Seed: `42` (см. `HW10-11.ipynb`)
-- Устройство: CPU/GPU определяется автоматически (`cuda` при наличии)
-- Как запустить: открыть `HW10-11.ipynb` и выполнить Run All
+- Python: 3.13.7
+- torch / torchvision: 2.11.0+cpu / 0.26.0+cpu
+- Устройство (CPU/GPU): CPU (`cuda=False`)
+- Seed: 42
+- Как запустить: открыть `HW10-11.ipynb` и выполнить Run All.
 
 ## 3. Данные
 
-- Классификация: `STL10` (train/test из torchvision + val split 80/20 из train)
-- Сегментация: `OxfordIIITPet` (из torchvision)
-- Папка для данных: `./data/` (скачивание автоматически при первом запуске)
+### 3.1. Часть A: классификация
+
+- Датасет: `STL10` (через `torchvision.datasets.STL10`)
+- Разделение: `train=4000`, `val=1000` (выделено из `train=5000`), `test=8000`
+  - У `STL10` нет официального `validation split`, поэтому `val` выделяется из `train` детерминированно с фиксированным seed.
+- Базовые transforms (`tf_base`): `Resize(64×64) → ToTensor() → Normalize(STL10)`
+- Augmentation transforms (`tf_aug`): `Resize(64×64) → RandomHorizontalFlip → RandomCrop(pad=8) → ColorJitter → ToTensor() → Normalize(STL10)`
+- transforms для ResNet (`tf_resnet`): `Resize(256) → CenterCrop(224) → ToTensor() → Normalize(ImageNet)`
+- Комментарий: STL10 — 10 классов, относительно небольшой train (5000), поэтому аугментации и transfer learning заметно влияют на качество.
+
+### 3.2. Часть B: structured vision
+
+- Датасет: `OxfordIIITPet` (через `torchvision.datasets.OxfordIIITPet`)
+- Трек: `segmentation`
+- Ground truth: маска сегментации; foreground определяется как класс `1` (передний план / питомец).
+- Предсказания: per-pixel logits из `DeepLabV3_ResNet50` (предобучение COCO/VOC), далее бинаризация “cat/dog vs background” и постобработка маски.
+- Комментарий: задача разумна для baseline-оценки, т.к. позволяет сравнить метрики при разных режимах постобработки (thresholding + фильтрация мелких компонент).
 
 ## 4. Часть A: модели и обучение (C1-C4)
 
-Задача: классификация STL10. Для выбора лучшего подхода используется train/val split 80/20, **test** применяется только один раз — для финальной оценки лучшей модели по `val_accuracy`.
+Сравнивались 4 подхода (выбор лучшего — по `val_accuracy`, **test** используется только один раз для финальной оценки лучшей модели):
 
-- C1: простой CNN без аугментаций
-- C2: простой CNN + аугментации
-- C3: `ResNet18` (замороженный backbone, обучается только голова)
-- C4: `ResNet18` (частичный fine-tune верхних слоёв)
+- C1 (simple-cnn-base): SimpleCNN без аугментаций.
+- C2 (simple-cnn-aug): SimpleCNN с аугментациями на train (val/test без аугментаций).
+- C3 (resnet18-head-only): `ResNet18` (ImageNet), frozen backbone, обучается только `fc`.
+- C4 (resnet18-finetune): `ResNet18` (ImageNet), frozen кроме `layer4`, обучаются `layer4` + `fc`.
 
-Превью аугментаций (C2): `artifacts/figures/augmentations_preview.png`
+Дополнительно:
+
+- Loss: `CrossEntropyLoss`
+- Optimizer: `Adam`
+- Batch size: 64
+- Epochs (макс): 8
+- Критерий выбора лучшей модели: максимум `val_accuracy`
 
 ## 5. Часть B: постановка задачи и режимы оценки (V1-V2)
 
-Задача: сегментация OxfordIIITPet предобученной моделью DeepLabV3.
+Модель: `DeepLabV3_ResNet50` (предобученные веса `COCO_WITH_VOC_LABELS_V1`).
 
-- V1: threshold=0.5
-- V2: threshold=0.7 + min-area filtering
-
-Визуализация примеров: `artifacts/figures/segmentation_examples.png`  
-Метрики: `artifacts/figures/segmentation_metrics.png`
+- Что считается foreground: пиксели питомца (mask==1 в ground truth).
+- V1: базовая постобработка — порог `threshold=0.5`.
+- V2: альтернативная постобработка — более строгий порог `threshold=0.7` + удаление малых компонент.
+- Как считался mean IoU: средний IoU по изображениями между бинарной предсказанной маской и бинарной GT-маской.
+- Pixel-level метрики: дополнительно считались `precision` / `recall` по пикселям.
 
 ## 6. Результаты
 
-- Таблица прогонов: `artifacts/runs.csv`
-- Лучшая модель классификатора: `artifacts/best_classifier.pt`
-- Конфиг лучшего прогона: `artifacts/best_classifier_config.json`
+Ссылки на файлы в репозитории:
 
-Графики/артефакты:
-- `artifacts/figures/classification_curves_best.png`
-- `artifacts/figures/classification_compare.png`
-- `artifacts/figures/augmentations_preview.png`
-- `artifacts/figures/segmentation_examples.png`
-- `artifacts/figures/segmentation_metrics.png`
+- Таблица результатов: `./artifacts/runs.csv`
+- Лучшая модель части A: `./artifacts/best_classifier.pt`
+- Конфиг лучшей модели части A: `./artifacts/best_classifier_config.json`
+- Кривые лучшего прогона классификации: `./artifacts/figures/classification_curves_best.png`
+- Сравнение C1–C4: `./artifacts/figures/classification_compare.png`
+- Визуализация аугментаций: `./artifacts/figures/augmentations_preview.png`
+- Визуализации части B: `./artifacts/figures/segmentation_examples.png`, `./artifacts/figures/segmentation_metrics.png`
+
+Короткая сводка:
+
+- Лучший эксперимент части A: **C4** (`ResNet18-finetune`)
+- Лучшая `val_accuracy`: 0.9560
+- Итоговая `test_accuracy` лучшего классификатора: 0.9459 (test считался один раз, только для лучшей модели)
+- Эффект аугментаций (C2 vs C1): в этой постановке качества ухудшилось (вероятно из-за слишком агрессивных преобразований и/или недостаточной настройки).
+- Эффект transfer learning (C3/C4 vs C1/C2): сильный прирост качества на валидации и на финальном test.
+- Head-only vs partial fine-tuning: partial fine-tuning (C4) оказался лучше head-only (C3).
+- В части B режим V2 даёт более высокие метрики (за счёт более строгого порога и подавления шума), но может “съедать” тонкие границы.
 
 ## 7. Анализ
 
-Transfer learning (ResNet18) даёт заметный прирост качества на STL10 по сравнению с SimpleCNN, а аугментации помогают улучшить обобщающую способность. В сегментации качество чувствительно к порогу и пост-обработке.
+SimpleCNN (C1/C2) ограничен по capacity, поэтому на небольшом `train` STL10 сильно зависит от регуляризации и удачно подобранных аугментаций. В текущей конфигурации аугментации в C2 не дали улучшения: вероятные причины — слишком сильные искажения для 64×64, отсутствие подбора их интенсивности и короткое обучение (8 эпох). Transfer learning на `ResNet18` заметно улучшил качество: предобученные признаки дают хороший старт, а partial fine-tuning (C4) позволяет адаптировать верхние слои под домен STL10 без полного переобучения сети. Head-only (C3) уже даёт высокий результат, но дообучение `layer4` в C4 дополнительно повышает качество.
+
+В сегментации ключевой фактор — постобработка бинарной маски. Более строгий threshold снижает FP (растёт precision), но может снижать recall на тонких участках. Фильтрация малых компонент помогает убрать шумные “островки” и повысить IoU, однако может удалять мелкие истинные объекты/части, если пороги выбраны слишком агрессивно. В целом сравнение V1/V2 показывает, что метрики для structured vision чувствительны к выбранному режиму оценки и постобработке.
 
 ## 8. Итоговый вывод
 
-Transfer learning на `ResNet18` обычно даёт более высокое качество на `STL10`, чем обучение простого CNN “с нуля”, особенно при аккуратном fine-tune. Для сегментации предобученные модели дают разумный baseline без сложной настройки.
+Как базовую конфигурацию для классификации изображений я бы выбрал transfer learning на `ResNet18` с частичным fine-tune верхних слоёв (как в C4): это даёт стабильное качество без сложного подбора архитектуры. Главное, что я вынес про transfer learning: даже небольшой fine-tuning верхних слоёв часто даёт ощутимый прирост относительно head-only, но требует аккуратного learning rate. Для segmentation важно явно фиксировать, что считается foreground, и оценивать несколько режимов постобработки (V1/V2), т.к. метрики могут существенно меняться.
+
+## 9. Приложение (опционально)
+
+Дополнительные сравнения (confusion matrix, альтернативные scheduler’ы, доп. режимы постобработки) не выполнялись.
+

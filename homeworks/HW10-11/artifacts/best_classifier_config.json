@@ -9,12 +9,12 @@
   "seed": 42,
   "optimizer": "Adam",
   "lr": 0.0005,
-  "best_val_accuracy": 0.956,
-  "test_accuracy": 0.9459,
+  "best_val_accuracy": 0.943,
+  "test_accuracy": 0.9463,
   "transforms": {
-    "train": "Resize(256) → CenterCrop(224) → ToTensor() → Normalize(ImageNet)",
-    "val": "Resize(256) → CenterCrop(224) → ToTensor() → Normalize(ImageNet)",
-    "test": "Resize(256) → CenterCrop(224) → ToTensor() → Normalize(ImageNet)"
+    "train": "Resize(256) -> CenterCrop(224) -> ToTensor() -> Normalize(ImageNet)",
+    "val": "Resize(256) -> CenterCrop(224) -> ToTensor() -> Normalize(ImageNet)",
+    "test": "Resize(256) -> CenterCrop(224) -> ToTensor() -> Normalize(ImageNet)"
   },
   "preprocess": {
     "resize": 256,
