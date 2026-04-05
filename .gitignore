@@ -70,3 +70,8 @@ homeworks/datasets/
 homeworks/.claude/
 # HW10-11 datasets (keep out of git)
 homeworks/HW10-11/data/
+
+# HW13 Hugging Face caches/checkpoints (keep out of git)
+homeworks/HW13/.hf/
+homeworks/HW13/results/
+homeworks/HW13/artifacts/hf/
