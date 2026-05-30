@@ -1,0 +1,101 @@
+ticket_id,text,category,priority
+1,"Password reset link does not arrive to my mailbox",account_access,medium
+2,"I cannot log in after changing my phone number",account_access,high
+3,"Two factor code is rejected even though it is fresh",account_access,high
+4,"My user profile is locked after several attempts",account_access,medium
+5,"The app says my session expired every minute",account_access,medium
+6,"Need to recover access for the admin account",account_access,high
+7,"Email confirmation button opens an error page",account_access,medium
+8,"Login works on web but not on mobile",account_access,medium
+9,"The invoice has the wrong company address",billing,medium
+10,"I was charged twice for the same subscription",billing,high
+11,"Please send the payment receipt for last month",billing,low
+12,"The card payment failed but money was reserved",billing,high
+13,"Need to change billing plan from monthly to annual",billing,medium
+14,"VAT number is missing from the invoice",billing,medium
+15,"Refund request for the unused license",billing,medium
+16,"Subscription renewal price looks incorrect",billing,medium
+17,"Dashboard loads very slowly after the update",technical_issue,medium
+18,"Export to CSV fails with server error",technical_issue,high
+19,"Search results disappear when I filter by date",technical_issue,medium
+20,"The integration returns timeout on every request",technical_issue,high
+21,"Mobile app crashes when opening analytics",technical_issue,high
+22,"Uploaded files are stuck in processing",technical_issue,medium
+23,"Reports page shows blank charts",technical_issue,medium
+24,"API returns 500 for valid customer id",technical_issue,high
+25,"How can I invite a new teammate to workspace",how_to,low
+26,"Where can I download the monthly report",how_to,low
+27,"How do I connect the Slack integration",how_to,low
+28,"Need instructions for creating a custom dashboard",how_to,low
+29,"How to export all customer records",how_to,low
+30,"Where do I configure notification settings",how_to,low
+31,"How can I rename a project",how_to,low
+32,"Need help finding the API token page",how_to,low
+33,"Please add dark theme for the admin panel",feature_request,low
+34,"We need bulk import for product catalog",feature_request,medium
+35,"Add webhook retries with configurable delay",feature_request,medium
+36,"It would be useful to save report templates",feature_request,low
+37,"Please support SSO with another identity provider",feature_request,medium
+38,"Need a role with read only billing access",feature_request,medium
+39,"Please add scheduled exports to email",feature_request,low
+40,"Can you add tags for support conversations",feature_request,low
+41,"Ссылка для сброса пароля не приходит на почту",account_access,medium
+42,"Не могу войти после смены телефона",account_access,high
+43,"Код двухфакторной авторизации не принимается",account_access,high
+44,"Аккаунт заблокирован после нескольких попыток входа",account_access,medium
+45,"В счете указаны неверные реквизиты компании",billing,medium
+46,"Списали оплату два раза за одну подписку",billing,high
+47,"Нужен чек за прошлый месяц",billing,low
+48,"Оплата картой не прошла но сумма заморожена",billing,high
+49,"После обновления очень медленно открывается дашборд",technical_issue,medium
+50,"Экспорт в CSV падает с ошибкой сервера",technical_issue,high
+51,"Мобильное приложение закрывается при открытии аналитики",technical_issue,high
+52,"API возвращает ошибку 500 на корректный запрос",technical_issue,high
+53,"Как пригласить нового сотрудника в рабочее пространство",how_to,low
+54,"Где скачать месячный отчет",how_to,low
+55,"Как подключить интеграцию со Slack",how_to,low
+56,"Где настроить уведомления",how_to,low
+57,"Добавьте темную тему для панели администратора",feature_request,low
+58,"Нужен массовый импорт каталога товаров",feature_request,medium
+59,"Добавьте повторные отправки webhook с задержкой",feature_request,medium
+60,"Хотим сохранять шаблоны отчетов",feature_request,low
+61,"Cannot access workspace after password reset",account_access,high
+62,"The recovery email says token is invalid",account_access,medium
+63,"Admin login is blocked after security update",account_access,high
+64,"Single sign on redirects back to login screen",account_access,high
+65,"Не открывается личный кабинет после восстановления пароля",account_access,high
+66,"Письмо подтверждения входа приходит слишком поздно",account_access,medium
+67,"После обновления браузера снова просит авторизацию",account_access,medium
+68,"Не получается восстановить доступ к рабочей области",account_access,high
+69,"Invoice download button returns an empty PDF",billing,medium
+70,"Need to update payment method for the next renewal",billing,medium
+71,"The trial converted to paid plan by mistake",billing,high
+72,"Credit card was declined on the checkout page",billing,medium
+73,"Не формируется счет на оплату для компании",billing,medium
+74,"Нужно изменить способ оплаты подписки",billing,medium
+75,"Возврат средств не отображается в кабинете",billing,high
+76,"Стоимость тарифа в счете отличается от сайта",billing,medium
+77,"Webhook delivery fails with connection refused",technical_issue,high
+78,"Import job stops on the last step without message",technical_issue,high
+79,"The chart filters reset after page refresh",technical_issue,medium
+80,"File upload returns unsupported format for CSV",technical_issue,medium
+81,"Сервис зависает при загрузке большого отчета",technical_issue,high
+82,"Интеграция с CRM перестала синхронизировать сделки",technical_issue,high
+83,"Фильтры в таблице сбрасываются после обновления страницы",technical_issue,medium
+84,"Выгрузка отчета завершается таймаутом",technical_issue,high
+85,"How do I remove a teammate from the project",how_to,low
+86,"Where can I see audit log for my workspace",how_to,low
+87,"How to create a report from saved filters",how_to,low
+88,"Need steps for enabling email notifications",how_to,low
+89,"Как удалить участника из проекта",how_to,low
+90,"Где посмотреть журнал действий пользователя",how_to,low
+91,"Как создать отчет по сохраненным фильтрам",how_to,low
+92,"Подскажите как включить уведомления на почту",how_to,low
+93,"Please add export to Google Sheets",feature_request,low
+94,"Need custom fields for support tickets",feature_request,medium
+95,"Add option to duplicate dashboards",feature_request,low
+96,"We need API limits visible in account settings",feature_request,medium
+97,"Добавьте экспорт отчетов в Google Sheets",feature_request,low
+98,"Нужны пользовательские поля для заявок",feature_request,medium
+99,"Добавьте возможность дублировать дашборды",feature_request,low
+100,"Хотим видеть лимиты API в настройках аккаунта",feature_request,medium

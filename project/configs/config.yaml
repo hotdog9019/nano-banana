@@ -1,0 +1,22 @@
+data_path: data/support_tickets.csv
+target_column: category
+text_column: text
+random_state: 42
+test_size: 0.2
+
+model:
+  analyzer: char_wb
+  max_features: 3000
+  ngram_min: 3
+  ngram_max: 5
+  max_iter: 2000
+  alpha: 0.0001
+
+artifacts:
+  model_path: artifacts/ticket_classifier.joblib
+  metrics_path: artifacts/metrics.json
+  predictions_path: artifacts/sample_predictions.csv
+
+service:
+  host: 127.0.0.1
+  port: 8000

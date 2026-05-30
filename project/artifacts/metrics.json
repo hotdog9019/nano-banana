@@ -1,0 +1,180 @@
+{
+  "dataset_rows": 100,
+  "classes": [
+    "account_access",
+    "billing",
+    "feature_request",
+    "how_to",
+    "technical_issue"
+  ],
+  "train_rows": 80,
+  "test_rows": 20,
+  "model_comparison": {
+    "baseline_most_frequent": {
+      "accuracy": 0.2,
+      "macro_f1": 0.0667,
+      "weighted_f1": 0.0667
+    },
+    "tfidf_word_complement_nb": {
+      "accuracy": 0.6,
+      "macro_f1": 0.5911,
+      "weighted_f1": 0.5911
+    },
+    "tfidf_char_linear_svc": {
+      "accuracy": 0.7,
+      "macro_f1": 0.6654,
+      "weighted_f1": 0.6654
+    },
+    "tfidf_char_sgd_log_loss": {
+      "accuracy": 0.7,
+      "macro_f1": 0.6654,
+      "weighted_f1": 0.6654
+    }
+  },
+  "baseline": {
+    "accuracy": 0.2,
+    "macro_f1": 0.0667,
+    "weighted_f1": 0.0667,
+    "classification_report": {
+      "account_access": {
+        "precision": 0.2,
+        "recall": 1.0,
+        "f1-score": 0.3333333333333333,
+        "support": 4.0
+      },
+      "billing": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 4.0
+      },
+      "feature_request": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 4.0
+      },
+      "how_to": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 4.0
+      },
+      "technical_issue": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 4.0
+      },
+      "accuracy": 0.2,
+      "macro avg": {
+        "precision": 0.04,
+        "recall": 0.2,
+        "f1-score": 0.06666666666666667,
+        "support": 20.0
+      },
+      "weighted avg": {
+        "precision": 0.04,
+        "recall": 0.2,
+        "f1-score": 0.06666666666666667,
+        "support": 20.0
+      }
+    }
+  },
+  "final_model": {
+    "accuracy": 0.7,
+    "macro_f1": 0.6654,
+    "weighted_f1": 0.6654,
+    "classification_report": {
+      "account_access": {
+        "precision": 0.6,
+        "recall": 0.75,
+        "f1-score": 0.6666666666666666,
+        "support": 4.0
+      },
+      "billing": {
+        "precision": 0.6666666666666666,
+        "recall": 1.0,
+        "f1-score": 0.8,
+        "support": 4.0
+      },
+      "feature_request": {
+        "precision": 0.6666666666666666,
+        "recall": 0.5,
+        "f1-score": 0.5714285714285714,
+        "support": 4.0
+      },
+      "how_to": {
+        "precision": 0.8,
+        "recall": 1.0,
+        "f1-score": 0.8888888888888888,
+        "support": 4.0
+      },
+      "technical_issue": {
+        "precision": 1.0,
+        "recall": 0.25,
+        "f1-score": 0.4,
+        "support": 4.0
+      },
+      "accuracy": 0.7,
+      "macro avg": {
+        "precision": 0.7466666666666667,
+        "recall": 0.7,
+        "f1-score": 0.6653968253968253,
+        "support": 20.0
+      },
+      "weighted avg": {
+        "precision": 0.7466666666666667,
+        "recall": 0.7,
+        "f1-score": 0.6653968253968253,
+        "support": 20.0
+      }
+    }
+  },
+  "confusion_matrix": {
+    "labels": [
+      "account_access",
+      "billing",
+      "feature_request",
+      "how_to",
+      "technical_issue"
+    ],
+    "matrix": [
+      [
+        3,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        4,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        2,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        4,
+        0
+      ],
+      [
+        1,
+        1,
+        1,
+        0,
+        1
+      ]
+    ]
+  }
+}

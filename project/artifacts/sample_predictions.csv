@@ -1,0 +1,21 @@
+ticket_id,text,category,priority,predicted_category
+57,Добавьте темную тему для панели администратора,feature_request,low,feature_request
+43,Код двухфакторной авторизации не принимается,account_access,high,account_access
+27,How do I connect the Slack integration,how_to,low,how_to
+10,I was charged twice for the same subscription,billing,high,billing
+74,Нужно изменить способ оплаты подписки,billing,medium,billing
+79,The chart filters reset after page refresh,technical_issue,medium,account_access
+98,Нужны пользовательские поля для заявок,feature_request,medium,account_access
+48,Оплата картой не прошла но сумма заморожена,billing,high,billing
+78,Import job stops on the last step without message,technical_issue,high,feature_request
+63,Admin login is blocked after security update,account_access,high,account_access
+89,Как удалить участника из проекта,how_to,low,how_to
+7,Email confirmation button opens an error page,account_access,medium,billing
+87,How to create a report from saved filters,how_to,low,how_to
+86,Where can I see audit log for my workspace,how_to,low,how_to
+20,The integration returns timeout on every request,technical_issue,high,billing
+36,It would be useful to save report templates,feature_request,low,how_to
+80,File upload returns unsupported format for CSV,technical_issue,medium,technical_issue
+8,Login works on web but not on mobile,account_access,medium,account_access
+9,The invoice has the wrong company address,billing,medium,billing
+39,Please add scheduled exports to email,feature_request,low,feature_request
